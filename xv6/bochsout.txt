@@ -33,7 +33,7 @@
 00000000000i[     ]   SB16 support: yes
 00000000000i[     ]   USB support: yes
 00000000000i[     ]   VGA extension support: vbe cirrus voodoo
-00000000000i[MEM0 ] allocated memory at 0493C020. after alignment, vector=0493D000
+00000000000i[MEM0 ] allocated memory at 049C9020. after alignment, vector=049CA000
 00000000000i[MEM0 ] 512.00MB
 00000000000i[MEM0 ] mem block size = 0x00100000, blocks=512
 00000000000i[MEM0 ] rom at 0xfffe0000/131072 ('c:\cygwin\usr\local\share\bochs/BIOS-bochs-latest')
@@ -43,7 +43,7 @@
 00000000000i[DEV  ] PIIX3 PCI-to-ISA bridge present at device 1, function 0
 00000000000i[     ] init_dev of 'cmos' plugin device by virtual method
 00000000000i[CMOS ] Using local time for initial clock
-00000000000i[CMOS ] Setting initial clock to: Thu Mar 12 17:01:54 2015 (time0=1426176114)
+00000000000i[CMOS ] Setting initial clock to: Tue Mar 17 23:26:38 2015 (time0=1426631198)
 00000000000i[     ] init_dev of 'dma' plugin device by virtual method
 00000000000i[DMA  ] channel 4 used by cascade
 00000000000i[     ] init_dev of 'pic' plugin device by virtual method
@@ -376,110 +376,25 @@
 00212385357i[MEM0 ] allocate_block: block=0xa1 used 0xa3 of 0x100
 00212673357i[MEM0 ] allocate_block: block=0xa2 used 0xa4 of 0x100
 00212961357i[MEM0 ] allocate_block: block=0xa3 used 0xa5 of 0x100
-00213249357i[MEM0 ] allocate_block: block=0xa4 used 0xa6 of 0x100
-00213537357i[MEM0 ] allocate_block: block=0xa5 used 0xa7 of 0x100
-00213825357i[MEM0 ] allocate_block: block=0xa6 used 0xa8 of 0x100
-00214113357i[MEM0 ] allocate_block: block=0xa7 used 0xa9 of 0x100
-00214401357i[MEM0 ] allocate_block: block=0xa8 used 0xaa of 0x100
-00214689357i[MEM0 ] allocate_block: block=0xa9 used 0xab of 0x100
-00214977357i[MEM0 ] allocate_block: block=0xaa used 0xac of 0x100
-00215265357i[MEM0 ] allocate_block: block=0xab used 0xad of 0x100
-00215553357i[MEM0 ] allocate_block: block=0xac used 0xae of 0x100
-00215841357i[MEM0 ] allocate_block: block=0xad used 0xaf of 0x100
-00216129357i[MEM0 ] allocate_block: block=0xae used 0xb0 of 0x100
-00216417357i[MEM0 ] allocate_block: block=0xaf used 0xb1 of 0x100
-00216705357i[MEM0 ] allocate_block: block=0xb0 used 0xb2 of 0x100
-00216993357i[MEM0 ] allocate_block: block=0xb1 used 0xb3 of 0x100
-00217281357i[MEM0 ] allocate_block: block=0xb2 used 0xb4 of 0x100
-00217569357i[MEM0 ] allocate_block: block=0xb3 used 0xb5 of 0x100
-00217857357i[MEM0 ] allocate_block: block=0xb4 used 0xb6 of 0x100
-00218145357i[MEM0 ] allocate_block: block=0xb5 used 0xb7 of 0x100
-00218433357i[MEM0 ] allocate_block: block=0xb6 used 0xb8 of 0x100
-00218721357i[MEM0 ] allocate_block: block=0xb7 used 0xb9 of 0x100
-00219009357i[MEM0 ] allocate_block: block=0xb8 used 0xba of 0x100
-00219297357i[MEM0 ] allocate_block: block=0xb9 used 0xbb of 0x100
-00219585357i[MEM0 ] allocate_block: block=0xba used 0xbc of 0x100
-00219873357i[MEM0 ] allocate_block: block=0xbb used 0xbd of 0x100
-00220161357i[MEM0 ] allocate_block: block=0xbc used 0xbe of 0x100
-00220449357i[MEM0 ] allocate_block: block=0xbd used 0xbf of 0x100
-00220737357i[MEM0 ] allocate_block: block=0xbe used 0xc0 of 0x100
-00221025357i[MEM0 ] allocate_block: block=0xbf used 0xc1 of 0x100
-00221313357i[MEM0 ] allocate_block: block=0xc0 used 0xc2 of 0x100
-00221601357i[MEM0 ] allocate_block: block=0xc1 used 0xc3 of 0x100
-00221889357i[MEM0 ] allocate_block: block=0xc2 used 0xc4 of 0x100
-00222177357i[MEM0 ] allocate_block: block=0xc3 used 0xc5 of 0x100
-00222465357i[MEM0 ] allocate_block: block=0xc4 used 0xc6 of 0x100
-00222753357i[MEM0 ] allocate_block: block=0xc5 used 0xc7 of 0x100
-00223041357i[MEM0 ] allocate_block: block=0xc6 used 0xc8 of 0x100
-00223329357i[MEM0 ] allocate_block: block=0xc7 used 0xc9 of 0x100
-00223617357i[MEM0 ] allocate_block: block=0xc8 used 0xca of 0x100
-00223905357i[MEM0 ] allocate_block: block=0xc9 used 0xcb of 0x100
-00224193357i[MEM0 ] allocate_block: block=0xca used 0xcc of 0x100
-00224481357i[MEM0 ] allocate_block: block=0xcb used 0xcd of 0x100
-00224769357i[MEM0 ] allocate_block: block=0xcc used 0xce of 0x100
-00225057357i[MEM0 ] allocate_block: block=0xcd used 0xcf of 0x100
-00225345357i[MEM0 ] allocate_block: block=0xce used 0xd0 of 0x100
-00225633357i[MEM0 ] allocate_block: block=0xcf used 0xd1 of 0x100
-00225921357i[MEM0 ] allocate_block: block=0xd0 used 0xd2 of 0x100
-00226209357i[MEM0 ] allocate_block: block=0xd1 used 0xd3 of 0x100
-00226497357i[MEM0 ] allocate_block: block=0xd2 used 0xd4 of 0x100
-00226785357i[MEM0 ] allocate_block: block=0xd3 used 0xd5 of 0x100
-00227073357i[MEM0 ] allocate_block: block=0xd4 used 0xd6 of 0x100
-00227361357i[MEM0 ] allocate_block: block=0xd5 used 0xd7 of 0x100
-00227649357i[MEM0 ] allocate_block: block=0xd6 used 0xd8 of 0x100
-00227937357i[MEM0 ] allocate_block: block=0xd7 used 0xd9 of 0x100
-00228225357i[MEM0 ] allocate_block: block=0xd8 used 0xda of 0x100
-00228513357i[MEM0 ] allocate_block: block=0xd9 used 0xdb of 0x100
-00228801357i[MEM0 ] allocate_block: block=0xda used 0xdc of 0x100
-00229089357i[MEM0 ] allocate_block: block=0xdb used 0xdd of 0x100
-00229377357i[MEM0 ] allocate_block: block=0xdc used 0xde of 0x100
-00229665357i[MEM0 ] allocate_block: block=0xdd used 0xdf of 0x100
-00229953357i[MEM0 ] allocate_block: block=0xde used 0xe0 of 0x100
-00230241357i[MEM0 ] allocate_block: block=0xdf used 0xe1 of 0x100
-00234630676e[SER  ] com1: write to tx hold register when not empty
-00234634417e[SER  ] com1: write to tx hold register when not empty
-00234638096e[SER  ] com1: write to tx hold register when not empty
-00234641767e[SER  ] com1: write to tx hold register when not empty
-00234645438e[SER  ] com1: write to tx hold register when not empty
-00234649109e[SER  ] com1: write to tx hold register when not empty
-00234652780e[SER  ] com1: write to tx hold register when not empty
-00234656451e[SER  ] com1: write to tx hold register when not empty
-00234660122e[SER  ] com1: write to tx hold register when not empty
-00234663793e[SER  ] com1: write to tx hold register when not empty
-00234667464e[SER  ] com1: write to tx hold register when not empty
-00234672124e[SER  ] com1: write to tx hold register when not empty
-00239159862e[SER  ] com1: write to tx hold register when not empty
-00239168897e[SER  ] com1: write to tx hold register when not empty
-00239177932e[SER  ] com1: write to tx hold register when not empty
-00239195939e[SER  ] com1: write to tx hold register when not empty
-00239204974e[SER  ] com1: write to tx hold register when not empty
-00239214009e[SER  ] com1: write to tx hold register when not empty
-00239223044e[SER  ] com1: write to tx hold register when not empty
-00239237676e[SER  ] com1: write to tx hold register when not empty
-00239246711e[SER  ] com1: write to tx hold register when not empty
-00239255746e[SER  ] com1: write to tx hold register when not empty
-00239264781e[SER  ] com1: write to tx hold register when not empty
-00239279413e[SER  ] com1: write to tx hold register when not empty
-00239288448e[SER  ] com1: write to tx hold register when not empty
-00420050000p[WGUI ] >>PANIC<< POWER button turned off.
-00420050000i[CPU0 ] CPU is in protected mode (active)
-00420050000i[CPU0 ] CS.mode = 32 bit
-00420050000i[CPU0 ] SS.mode = 32 bit
-00420050000i[CPU0 ] EFER   = 0x00000000
-00420050000i[CPU0 ] | EAX=00000000  EBX=00010054  ECX=8010ff20  EDX=00000024
-00420050000i[CPU0 ] | ESP=8010c5e0  EBP=8010c608  ESI=00010054  EDI=001126fc
-00420050000i[CPU0 ] | IOPL=0 id vip vif ac vm rf nt of df if tf SF zf AF pf CF
-00420050000i[CPU0 ] | SEG sltr(index|ti|rpl)     base    limit G D
-00420050000i[CPU0 ] |  CS:0008( 0001| 0|  0) 00000000 ffffffff 1 1
-00420050000i[CPU0 ] |  DS:0010( 0002| 0|  0) 00000000 ffffffff 1 1
-00420050000i[CPU0 ] |  SS:0010( 0002| 0|  0) 00000000 ffffffff 1 1
-00420050000i[CPU0 ] |  ES:0010( 0002| 0|  0) 00000000 ffffffff 1 1
-00420050000i[CPU0 ] |  FS:0018( 0003| 0|  0) 8010f9d4 00000fff 1 1
-00420050000i[CPU0 ] |  GS:0018( 0003| 0|  0) 8010f9d4 00000fff 1 1
-00420050000i[CPU0 ] | EIP=8010464e (8010464e)
-00420050000i[CPU0 ] | CR0=0xe0010011 CR2=0x00000000
-00420050000i[CPU0 ] | CR3=0x003ff000 CR4=0x00000010
-00420050000i[CPU0 ] 0x000000008010464e>> add dword ptr ss:[ebp-12], 0x0000007c : 8345F47C
-00420050000i[CMOS ] Last time is 1426176122 (Thu Mar 12 17:02:02 2015)
-00420050000i[     ] restoring default signal behavior
-00420050000i[CTRL ] quit_sim called with exit code 1
+00213200000p[WGUI ] >>PANIC<< POWER button turned off.
+00213200000i[CPU0 ] CPU is in protected mode (active)
+00213200000i[CPU0 ] CS.mode = 32 bit
+00213200000i[CPU0 ] SS.mode = 32 bit
+00213200000i[CPU0 ] EFER   = 0x00000000
+00213200000i[CPU0 ] | EAX=01010101  EBX=8a3d4000  ECX=00000370  EDX=00000400
+00213200000i[CPU0 ] | ESP=8010c58c  EBP=8010c594  ESI=00010054  EDI=8a3d4240
+00213200000i[CPU0 ] | IOPL=0 id vip vif ac vm rf nt of df if tf sf zf af pf cf
+00213200000i[CPU0 ] | SEG sltr(index|ti|rpl)     base    limit G D
+00213200000i[CPU0 ] |  CS:0008( 0001| 0|  0) 00000000 ffffffff 1 1
+00213200000i[CPU0 ] |  DS:0010( 0002| 0|  0) 00000000 ffffffff 1 1
+00213200000i[CPU0 ] |  SS:0010( 0002| 0|  0) 00000000 ffffffff 1 1
+00213200000i[CPU0 ] |  ES:0010( 0002| 0|  0) 00000000 ffffffff 1 1
+00213200000i[CPU0 ] |  FS:0000( 0000| 0|  0) 00000000 00000000 0 0
+00213200000i[CPU0 ] |  GS:0018( 0003| 0|  0) 8010f9d4 00000fff 1 1
+00213200000i[CPU0 ] | EIP=80104c8c (80104c8a)
+00213200000i[CPU0 ] | CR0=0xe0010011 CR2=0x00000000
+00213200000i[CPU0 ] | CR3=0x003ff000 CR4=0x00000010
+00213200000i[CPU0 ] 0x0000000080104c8a>> rep stosd dword ptr es:[edi], eax : F3AB
+00213200000i[CMOS ] Last time is 1426631202 (Tue Mar 17 23:26:42 2015)
+00213200000i[     ] restoring default signal behavior
+00213200000i[CTRL ] quit_sim called with exit code 1
