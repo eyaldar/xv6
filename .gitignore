@@ -40,3 +40,4 @@ xv6/vectors.S
 xv6/wc.sym
 xv6/xv6.img
 xv6/zombie.sym
+xv6/bochsout.txt

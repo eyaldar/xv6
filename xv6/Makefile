@@ -192,6 +192,10 @@ print: xv6.pdf
 bochs : fs.img xv6.img
 	if [ ! -e .bochsrc ]; then ln -s dot-bochsrc .bochsrc; fi
 	bochs -q
+	
+bochsdbg : fs.img xv6.img
+	if [ ! -e .bochsrc ]; then ln -s dot-bochsrc .bochsrc; fi
+	bochsdbg -q
 
 # try to generate a unique GDB port
 GDBPORT = $(shell expr `id -u` % 5000 + 25000)
