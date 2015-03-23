@@ -51,7 +51,7 @@ TOOLPREFIX := $(shell if i386-jos-elf-objdump -i 2>&1 | grep '^elf32-i386$$' >/d
 endif
 
 # If the makefile can't find QEMU, specify its path here
-#QEMU = 
+QEMU = "/usr/local/share/qemu/qemu-system-i386.exe"
 
 # Try to infer the correct QEMU
 ifndef QEMU
@@ -198,11 +198,13 @@ bochsdbg : fs.img xv6.img
 	bochsdbg -q
 
 # try to generate a unique GDB port
-GDBPORT = $(shell expr `id -u` % 5000 + 25000)
+GDBPORT = 1234 
+#$(shell expr `id -u` % 5000 + 25000)
 # QEMU's gdb stub command line changed in 0.11
-QEMUGDB = $(shell if $(QEMU) -help | grep -q '^-gdb'; \
-	then echo "-gdb tcp::$(GDBPORT)"; \
-	else echo "-s -p $(GDBPORT)"; fi)
+QEMUGDB = -gdb tcp:127.0.0.1:$(GDBPORT)
+#$(shell if $(QEMU) -help | grep -q '^-gdb'; \
+	#then echo "-gdb tcp::$(GDBPORT)"; \
+	#else echo "-s -p $(GDBPORT)"; fi)
 ifndef CPUS
 CPUS := 2
 endif
