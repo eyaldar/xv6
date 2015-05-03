@@ -143,7 +143,7 @@ setupkvm(void)
   return pgdir;
 }
 
-// Allocate one page table for the machine for the kernel address
+// Allocate one page table of the machine for the kernel address
 // space for scheduler processes.
 void
 kvmalloc(void)

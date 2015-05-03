@@ -37,8 +37,8 @@ bootmain(void)
   for(; ph < eph; ph++){
     pa = (uchar*)ph->paddr;
     readseg(pa, ph->filesz, ph->off);
-    if(ph->memsz > ph->filesz)
-      stosb(pa + ph->filesz, 0, ph->memsz - ph->filesz);
+    if(ph->memsz > ph->filesz) // If too much RAM was allocated
+      stosb(pa + ph->filesz, 0, ph->memsz - ph->filesz); // Zero redundant RAM.
   }
 
   // Call the entry point from the ELF header.
