@@ -100,3 +100,20 @@ sys_getppid(void)
 
 	return -1;
 }
+
+int
+sys_get_proc_data(void)
+{
+	int pid;
+	char *ptr_arg;
+	struct proc_data* proc_data;
+
+	if(argint(0, &pid) < 0)
+		return -1;
+	if(argptr(1, &ptr_arg, sizeof(proc_data)) < 0)
+		return -1;
+
+	proc_data = (struct proc_data*)ptr_arg;
+
+	return get_proc_data(pid, proc_data);
+}

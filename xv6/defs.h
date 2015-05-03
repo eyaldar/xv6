@@ -4,6 +4,7 @@ struct file;
 struct inode;
 struct pipe;
 struct proc;
+struct proc_data;
 struct spinlock;
 struct stat;
 struct superblock;
@@ -116,6 +117,7 @@ void            userinit(void);
 int             wait(void);
 void            wakeup(void*);
 void            yield(void);
+int 			get_proc_data(int pid, struct proc_data* proc_data);
 
 // swtch.S
 void            swtch(struct context**, struct context*);

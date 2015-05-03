@@ -456,4 +456,30 @@ procdump(void)
   }
 }
 
+int
+get_proc_data(int pid, struct proc_data* proc_data)
+{
+	  struct proc *p;
 
+	  acquire(&ptable.lock);
+	  for(p = ptable.proc; p < &ptable.proc[NPROC]; p++)
+		if(p->pid == pid)
+		  goto found;
+	  release(&ptable.lock);
+	  return -1;
+
+	found:
+	  release(&ptable.lock);
+
+	  proc_data->ppid = 0;
+
+	  if(pid > 1)
+	  {
+		  proc_data->ppid = p->parent->pid;
+	  }
+
+	  safestrcpy(proc_data->name, p->name, sizeof(p->name));
+	  proc_data->size = p->sz;
+
+	return 1;
+}
