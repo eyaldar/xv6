@@ -88,3 +88,15 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+int
+sys_getppid(void)
+{
+	// Check whether a proc is running
+	if(proc != 0)
+	{
+		return proc->parent->pid;
+	}
+
+	return -1;
+}
