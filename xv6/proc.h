@@ -68,12 +68,6 @@ struct proc {
   char name[16];               // Process name (debugging)
 };
 
-struct proc_data {
-	uint ppid;
-	char name[16];
-	uint size;
-};
-
 // Process memory is laid out contiguously, low addresses first:
 //   text
 //   original data and bss

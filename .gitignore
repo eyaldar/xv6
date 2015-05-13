@@ -41,3 +41,5 @@ xv6/wc.sym
 xv6/xv6.img
 xv6/zombie.sym
 xv6/bochsout.txt
+xv6/ps_prog.sym
+xv6/_ps_prog

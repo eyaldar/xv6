@@ -9,3 +9,9 @@ struct stat {
   short nlink; // Number of links to file
   uint size;   // Size of file in bytes
 };
+
+struct proc_data {
+	uint ppid;		// Parent process id
+	char name[16];  // Process name
+	uint size;		// Process size
+};
