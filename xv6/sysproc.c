@@ -117,7 +117,6 @@ sys_sem_open(void)
 	int init;
 	int maxVal;
 
-	// Trying to fetch all the required arguments
 	if(argptr(0, &name, NSEM_NAME) < 0)
 		return -1;
 

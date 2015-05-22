@@ -11,5 +11,5 @@
 #define LOGSIZE      10  // max data sectors in on-disk log
 #define NSEM        100  // open semaphores per system
 #define NOSEM        16  // open semaphores per process
-#define NSEM_NAME 	  6  // maximum characters in a named semaphore
+#define NSEM_NAME 	  6  // maximum characters in a named semaphore's name
 
