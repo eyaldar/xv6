@@ -25,7 +25,8 @@ void            panic(char*) __attribute__((noreturn));
 int             exec(char*, char**);
 
 // semaphore.c
-struct sem*		get_sem(char* name, int create, int init, int maxVal);
+struct sem*		sem_find(char* name);
+struct sem* 	sem_allocate(char* name, int init, int maxVal);
 void 			sem_init(void);
 struct sem*    	sem_dup(struct sem*);
 int 			sem_open(char* name, int create, int init, int maxVal);

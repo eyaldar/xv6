@@ -123,10 +123,10 @@ sys_sem_open(void)
 	if(argint(1, &create) < 0)
 		return -1;
 
-	if(argint(1, &init) < 0)
+	if(argint(2, &init) < 0)
 		return -1;
 
-	if(argint(1, &maxVal) < 0)
+	if(argint(3, &maxVal) < 0)
 		return -1;
 
 	return sem_open(name, create, init, maxVal);

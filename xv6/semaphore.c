@@ -46,39 +46,46 @@ void sem_init(void) {
 // Get or create a named semaphore with the given name
 // inside the system semaphore table.
 struct sem*
-get_sem(char* name, int create, int init, int maxVal) {
+sem_find(char* name)
+{
 	struct sem *s;
-	struct sem *empty_s;
+
+	int name_len = strlen(name);
 
 	acquire(&stable.gslock);
 	for (s = stable.sem; s < stable.sem + NSEM; s++) {
 		// if the semaphore is not in use is empty
-		if (s->ref == 0) {
-			if (empty_s != 0) {
-				empty_s = s;
-			}
-		} else {
-			// if name was found
-			if (memcmp(s->name, name, NSEM_NAME)) {
-				s->ref++;
-				release(&stable.gslock);
-				return s;
-			}
+		if (s->ref > 0 && (memcmp(s->name, name, name_len) == 0)) {
+			s->ref++;
+			release(&stable.gslock);
+			return s;
 		}
 	}
 
-	// if create is allowed and found inactive entry
-	if (create && empty_s != 0) {
-		s = empty_s;
+	release(&stable.gslock);
+	return 0;
+}
 
-		safestrcpy(s->name, name, sizeof(name));
-		s->ref = 1;
-		s->available_locks = init;
-		s->max_locks = maxVal;
-		initlock(&s->sslock, s->name);
+struct sem*
+sem_allocate(char* name, int init, int maxVal)
+{
+	struct sem *s;
 
-		release(&stable.gslock);
-		return s;
+	acquire(&stable.gslock);
+
+	for (s = stable.sem; s < stable.sem + NSEM; s++) {
+		// if the semaphore is not in use is empty
+		if (s->ref == 0) {
+
+			s->ref = 1;
+			safestrcpy(s->name, name, strlen(name) + 1);
+			s->available_locks = init;
+			s->max_locks = maxVal;
+			initlock(&s->sslock, s->name);
+
+			release(&stable.gslock);
+			return s;
+		}
 	}
 
 	release(&stable.gslock);
@@ -106,15 +113,27 @@ int sem_open(char* name, int create, int init, int maxVal) {
 	struct sem *s;
 
 	// name should not exceed the name limit.
-	if (strlen(name) > NSEM_NAME)
+	if (strlen(name) > NSEM_NAME) {
+		cprintf("Invalid name %s\n", name);
 		return -1;
+	}
 
-	// get semaphore by name
-	if ((s = get_sem(name, create, init, maxVal)) == 0
-			|| (sd = sdalloc(s)) < 0) {
-		if (s) {
-			sem_close(s);
-		}
+	// maxVal should be lower than init
+	if (init > maxVal) {
+		cprintf("Invalid init(%d) and maxVal(%d)\n", init, maxVal);
+		return -1;
+	}
+
+	// If both find and create(when enabled) failed to return a semaphore.
+	if ((s = sem_find(name)) == 0 && (!create || (s = sem_allocate(name, init, maxVal)) == 0)) {
+		cprintf("Failed to find or allocate a semaphore\n");
+		return -1;
+	}
+
+	// Trying to allocate semaphore descriptor for the process.
+	if((sd = sdalloc(s)) < 0) {
+		sem_close(s);
+		cprintf("Failed to allocate a descriptor\n");
 		return -1;
 	}
 
