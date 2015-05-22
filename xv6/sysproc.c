@@ -88,3 +88,34 @@ sys_uptime(void)
   release(&tickslock);
   return xticks;
 }
+
+
+int
+sys_sem_open(void)
+{
+	return 1;
+}
+
+int
+sys_sem_close(void)
+{
+	return 1;
+}
+
+int
+sys_sem_wait(void)
+{
+	return 1;
+}
+
+int
+sys_sem_trywait(void)
+{
+	return 1;
+}
+
+int
+sys_sem_signal(void)
+{
+	return 1;
+}
