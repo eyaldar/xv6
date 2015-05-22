@@ -43,7 +43,7 @@ void sem_init(void) {
 	initlock(&stable.gslock, "stable");
 }
 
-// Get or create a named semaphore with the given name
+// Searches for a named semaphore by a given name
 // inside the system semaphore table.
 struct sem*
 sem_find(char* name)
@@ -66,6 +66,8 @@ sem_find(char* name)
 	return 0;
 }
 
+// Allocates a semaphore inside the semaphore table,
+// in case there is no empty slots, will return -1.
 struct sem*
 sem_allocate(char* name, int init, int maxVal)
 {
