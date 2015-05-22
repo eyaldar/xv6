@@ -6,6 +6,25 @@
 #include "mmu.h"
 #include "proc.h"
 
+// Fetch the nth word-sized system call argument as a semaphore descriptor
+// and return both the descriptor and the corresponding struct semaphore.
+static int
+argsd(int n, int *psd, struct sem **ps)
+{
+  int sd;
+  struct sem *s;
+
+  if(argint(n, &sd) < 0)
+    return -1;
+  if(sd < 0 || sd >= NOSEM || (s=proc->osem[sd]) == 0)
+    return -1;
+  if(psd)
+    *psd = sd;
+  if(ps)
+    *ps = s;
+  return 0;
+}
+
 int
 sys_fork(void)
 {
@@ -93,29 +112,69 @@ sys_uptime(void)
 int
 sys_sem_open(void)
 {
-	return 1;
+	char* name;
+	int create;
+	int init;
+	int maxVal;
+
+	// Trying to fetch all the required arguments
+	if(argptr(0, &name, NSEM_NAME) < 0)
+		return -1;
+
+	if(argint(1, &create) < 0)
+		return -1;
+
+	if(argint(1, &init) < 0)
+		return -1;
+
+	if(argint(1, &maxVal) < 0)
+		return -1;
+
+	return sem_open(name, create, init, maxVal);
 }
 
 int
 sys_sem_close(void)
 {
-	return 1;
+	int sd;
+	struct sem *s;
+
+	if(argsd(0, &sd, &s) < 0)
+		return -1;
+	proc->osem[sd] = 0;
+
+	return sem_close(s);
 }
 
 int
 sys_sem_wait(void)
 {
-	return 1;
+	struct sem *s;
+
+	if(argsd(0, 0, &s) < 0)
+		return -1;
+
+	return sem_wait(s);
 }
 
 int
 sys_sem_trywait(void)
 {
-	return 1;
+	struct sem *s;
+
+	if(argsd(0, 0, &s) < 0)
+		return -1;
+
+	return sem_trywait(s);
 }
 
 int
 sys_sem_signal(void)
 {
-	return 1;
+	struct sem *s;
+
+	if(argsd(0, 0, &s) < 0)
+		return -1;
+
+	return sem_signal(s);
 }

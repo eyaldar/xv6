@@ -7,6 +7,7 @@ struct proc;
 struct spinlock;
 struct stat;
 struct superblock;
+struct sem;
 
 // bio.c
 void            binit(void);
@@ -22,6 +23,17 @@ void            panic(char*) __attribute__((noreturn));
 
 // exec.c
 int             exec(char*, char**);
+
+// semaphore.c
+struct sem*		get_sem(char* name, int create, int init, int maxVal);
+void 			sem_init(void);
+struct sem*    	sem_dup(struct sem*);
+int 			sem_open(char* name, int create, int init, int maxVal);
+int 			sem_close(struct sem*);
+int 			sem_wait(struct sem*);
+int 			sem_trywait_nolocks(struct sem*);
+int 			sem_trywait(struct sem*);
+int 			sem_signal(struct sem*);
 
 // file.c
 struct file*    filealloc(void);

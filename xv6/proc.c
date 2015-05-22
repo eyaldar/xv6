@@ -152,6 +152,11 @@ fork(void)
   for(i = 0; i < NOFILE; i++)
     if(proc->ofile[i])
       np->ofile[i] = filedup(proc->ofile[i]);
+
+  for(i = 0; i < NOSEM; i++)
+    if(proc->osem[i])
+      np->osem[i] = sem_dup(proc->osem[i]);
+
   np->cwd = idup(proc->cwd);
  
   pid = np->pid;
@@ -168,6 +173,7 @@ exit(void)
 {
   struct proc *p;
   int fd;
+  int sd;
 
   if(proc == initproc)
     panic("init exiting");
@@ -177,6 +183,14 @@ exit(void)
     if(proc->ofile[fd]){
       fileclose(proc->ofile[fd]);
       proc->ofile[fd] = 0;
+    }
+  }
+
+  // Close all open semaphores.
+  for(sd = 0; sd < NOSEM; sd++){
+    if(proc->osem[sd]){
+      sem_close(proc->osem[sd]);
+      proc->osem[sd] = 0;
     }
   }
 
