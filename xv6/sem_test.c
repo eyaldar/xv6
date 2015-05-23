@@ -188,11 +188,12 @@ void test_wait_and_signal()
 void test_multiple_wait_and_signal()
 {
 	int i;
-	int sd;
+	int sd, sd2;
 	int pid;
 
 	// initialize semaphores for shared processes
 	sd = sem_open(SEM_NAME, 1, 2, 2);
+	sd2 = sem_open(SEM_NAME, 1, 1, 1);
 
 	if(sd < 0 ) {
 		printf (2, "failed to create a semaphore!\n");
@@ -220,17 +221,33 @@ void test_multiple_wait_and_signal()
 
 				printf(1, "  (%d)Parent: finished (%d)!.\n", getpid(), i);
 				sem_signal(sd);
+			} else if(i % 4 == 0) {
+				printf(1, "  (%d)Parent: I'm waiting!.\n", getpid());
+				sem_wait(sd2);
+				printf(1, "  (%d)Parent: is in critical section (%d).\n", getpid(), i);
+				wastetime(10000000);
+
+				printf(1, "  (%d)Parent: finished (%d)!.\n", getpid(), i);
+				sem_signal(sd);
 			}
 		}
 
 		// child process
 		else{
-			sem_wait (sd);
+			int used_sd;
+
+			if(getpid() % 2 == 0) {
+				used_sd = sd;
+			} else {
+				used_sd = sd2;
+			}
+
+			sem_wait (used_sd);
 			printf (1, "  (%d) Child(%d) is in critical section.\n", getpid(), i);
 			wastetime(10000000);
 
 			printf (1, "  (%d) Child(%d) finished!\n", getpid(), i);
-			sem_signal (sd);
+			sem_signal (used_sd);
 			exit ();
 		}                 /* child processes */
 	}
@@ -243,6 +260,7 @@ void test_multiple_wait_and_signal()
 
 	// cleanup semaphores
 	sem_close (sd);
+	sem_close (sd2);
 }
 
 // Simulate a sleeping process by running a loop for a given amount of iterations.
