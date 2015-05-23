@@ -117,7 +117,7 @@ sys_sem_open(void)
 	int init;
 	int maxVal;
 
-	if(argptr(0, &name, NSEM_NAME) < 0)
+	if(argstr(0, &name) < 0)
 		return -1;
 
 	if(argint(1, &create) < 0)

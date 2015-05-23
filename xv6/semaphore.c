@@ -13,8 +13,8 @@
 struct sem {
 	struct spinlock sslock;	// single semaphore lock
 	int ref;		 		// Reference counter
-	int available_locks;	// Number of available users.
-	int max_locks;			// Number of maximum users.
+	int value;				// Number of available locks.
+	int max;				// Number of maximum locks.
 
 	char name[NSEM_NAME];	// Name of semaphore.
 };
@@ -56,6 +56,7 @@ sem_find(char* name)
 	for (s = stable.sem; s < stable.sem + NSEM; s++) {
 		// if the semaphore is not in use is empty
 		if (s->ref > 0 && (memcmp(s->name, name, name_len) == 0)) {
+			cprintf("Found %s!",s->name);
 			s->ref++;
 			release(&stable.gslock);
 			return s;
@@ -81,9 +82,9 @@ sem_allocate(char* name, int init, int maxVal)
 
 			s->ref = 1;
 			safestrcpy(s->name, name, strlen(name) + 1);
-			s->available_locks = init;
-			s->max_locks = maxVal;
-			initlock(&s->sslock, s->name);
+			s->value = init;
+			s->max = maxVal;
+			initlock(&s->sslock, "semaphore");
 
 			release(&stable.gslock);
 			return s;
@@ -112,10 +113,13 @@ sem_dup(struct sem *s) {
 // the semaphore descriptor index.
 int sem_open(char* name, int create, int init, int maxVal) {
 	int sd;
+	int name_len;
 	struct sem *s;
 
-	// name should not exceed the name limit.
-	if (strlen(name) > NSEM_NAME) {
+	name_len = strlen(name);
+
+	// name should not exceed the name size limit.
+	if (name_len > NSEM_NAME || name_len < 1) {
 		cprintf("Invalid name %s\n", name);
 		return -1;
 	}
@@ -148,14 +152,8 @@ int sem_close(struct sem* s) {
 
 	if (s->ref < 0)
 		panic("sem_close");
-	if (--s->ref > 0) {
-		release(&stable.gslock);
-		return 0;
-	}
 
-	s->ref = 0;
-	s->max_locks = 0;
-	s->available_locks = 0;
+	s->ref--;
 
 	release(&stable.gslock);
 
@@ -174,7 +172,7 @@ int sem_wait(struct sem* s) {
 			return -1;
 		}
 
-		sleep(&s->available_locks, &s->sslock);  //DOC: pipewrite-sleep
+		sleep(&s->value, &s->sslock);  //DOC: pipewrite-sleep
 	}
 
 	release(&s->sslock);
@@ -185,8 +183,8 @@ int sem_wait(struct sem* s) {
 // in case there are no available locks, will return -1.
 // this method doesn't lock the semaphore
 int sem_trywait_nolocks(struct sem* s) {
-	if (s->available_locks > 0) {
-		s->available_locks--;
+	if (s->value > 0) {
+		s->value--;
 		return 0;
 	}
 
@@ -211,13 +209,13 @@ int sem_trywait(struct sem* s) {
 int sem_signal(struct sem* s) {
 	acquire(&s->sslock);
 
-	if (s->available_locks == s->max_locks) {
+	if (s->value == s->max) {
 		release(&s->sslock);
 		return -1;
 	}
 
-	s->available_locks++;
-	wakeup(&s->available_locks);
+	s->value++;
+	wakeup(&s->value);
 	release(&s->sslock);
 
 	return 0;
