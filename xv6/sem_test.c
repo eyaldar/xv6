@@ -2,7 +2,8 @@
 #include "stat.h"
 #include "user.h"
 
-#define SEM_NAME "Test"
+#define FIRST_SEM_NAME "Test"
+#define SECOND_SEM_NAME "Test"
 #define FORK_NUM 20
 
 void test_create_semaphores();
@@ -192,8 +193,8 @@ void test_multiple_wait_and_signal()
 	int pid;
 
 	// initialize semaphores for shared processes
-	sd = sem_open(SEM_NAME, 1, 2, 2);
-	sd2 = sem_open(SEM_NAME, 1, 1, 1);
+	sd = sem_open(FIRST_SEM_NAME, 1, 2, 2);
+	sd2 = sem_open(SECOND_SEM_NAME, 1, 1, 1);
 
 	if(sd < 0 ) {
 		printf (2, "failed to create a semaphore!\n");
@@ -249,7 +250,7 @@ void test_multiple_wait_and_signal()
 			printf (1, "  (%d) Child(%d) finished!\n", getpid(), i);
 			sem_signal (used_sd);
 			exit ();
-		}                 /* child processes */
+		}
 	}
 
 	// wait for all children to exit
