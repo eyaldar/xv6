@@ -3,7 +3,7 @@
 #include "user.h"
 
 #define FIRST_SEM_NAME "Test"
-#define SECOND_SEM_NAME "Test"
+#define SECOND_SEM_NAME "Test2"
 #define FORK_NUM 20
 
 void test_create_semaphores();
@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 	test_create_semaphores();
 	wastetime(5000000);
 
-	printf(1, "\n\nTest2: close semaphores explicitely (by calling sem_close):\n");
+	printf(1, "\n\nTest2: close semaphores explicitly (by calling sem_close):\n");
 	printf(1, "************************************\n");
 	test_explicitly_close_semaphores();
 	wastetime(5000000);
@@ -61,6 +61,8 @@ void test_create_semaphores()
 	printf(1, "Semaphore bbb local id is %d.\n", semid2);
 	int semid3 = sem_open("ccc", 1, 2, 1);
 	printf(1, "Semaphore ccc local id is %d (Should be -1).\n", semid3);
+	int semid4 = sem_open("cccsfafsag", 1, 2, 1);
+	printf(1, "Semaphore cccsfafsag local id is %d (Should be -1).\n", semid4);
 
 	wastetime(50000000);
 }
