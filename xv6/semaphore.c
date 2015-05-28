@@ -150,7 +150,7 @@ int sem_open(char* name, int create, int init, int maxVal) {
 int sem_close(struct sem* s) {
 	acquire(&stable.gslock);
 
-	if (s->ref < 0)
+	if (s->ref < 1)
 		panic("sem_close");
 
 	s->ref--;
