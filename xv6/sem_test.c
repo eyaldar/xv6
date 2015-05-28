@@ -231,7 +231,7 @@ void test_multiple_wait_and_signal()
 				wastetime(10000000);
 
 				printf(1, "  (%d)Parent: finished (%d)!.\n", getpid(), i);
-				sem_signal(sd);
+				sem_signal(sd2);
 			}
 		}
 
