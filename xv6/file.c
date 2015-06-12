@@ -8,6 +8,9 @@
 #include "fs.h"
 #include "file.h"
 #include "spinlock.h"
+#include "mmu.h"
+
+#define min(a, b) ((a) < (b) ? (a) : (b))
 
 struct devsw devsw[NDEV];
 struct {
@@ -154,3 +157,65 @@ filewrite(struct file *f, char *addr, int n)
   panic("filewrite");
 }
 
+// seek inside a file
+int
+fileseek(struct file *f, int off, char c)
+{
+	int r;
+	int final_off;
+
+	if(f->readable == 0 && f->writable == 0)
+	return -1;
+	if(f->type == FD_PIPE)
+	return -1;
+	if(f->type == FD_INODE){
+
+		ilock(f->ip);
+		if((r = seeki(f->ip, f->off, off)) >= 0) {
+			final_off = off + f->off;
+			f->off = r;
+
+			if(final_off > 0 && r < final_off) {
+				iunlock(f->ip);
+
+				r = fileresize(f, off - r, c);
+
+				ilock(f->ip);
+
+				f->off = f->ip->size - 1;
+			}
+		}
+
+		iunlock(f->ip);
+
+		return r;
+	}
+	panic("fileseek");
+}
+
+int
+fileresize(struct file *f, int n, char c)
+{
+	int i;
+	int r = 0;
+	int write_size;
+	int add_size = n;
+	char *addition, *a;
+
+	addition = kalloc();
+
+	// fill relevant bytes with the required char.
+	a = addition;
+	for(i=0; i < PGSIZE; i++)
+		*a++ = c;
+
+	// while more characters are required.
+	while(add_size > 0) {
+		write_size = min(add_size, PGSIZE);
+		r += filewrite(f, addition, write_size);
+		add_size -= PGSIZE;
+	}
+	kfree(addition);
+
+	return r;
+}

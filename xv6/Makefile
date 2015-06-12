@@ -164,6 +164,11 @@ UPROGS=\
 	_usertests\
 	_wc\
 	_zombie\
+	_rsw\
+	_bigfile\
+	_test\
+	_filesize\
+	_tail\
 
 fs.img: mkfs README $(UPROGS)
 	./mkfs fs.img README $(UPROGS)

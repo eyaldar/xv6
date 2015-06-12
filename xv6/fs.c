@@ -648,3 +648,22 @@ nameiparent(char *path, char *name)
 {
   return namex(path, 1, name);
 }
+
+int
+seeki(struct inode *ip, int off, int n)
+{
+  if(ip->type == T_DEV || ip->type == T_DIR)
+      return -1;
+
+  off += n;
+
+  if (off <0)
+	off = 0;
+  if (off > 0 && off > ip->size) {
+	off = ip->size;
+  }
+
+
+
+  return off;
+}
