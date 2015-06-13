@@ -5,5 +5,6 @@
 int
 main(int argc, char *argv[])
 {
+	printf(1, "dummy test");
 	exit();
 }

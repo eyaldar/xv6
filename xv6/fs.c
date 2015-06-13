@@ -362,30 +362,34 @@ bmap_get(struct inode* ip, uint bn, uint addr) {
 	return result_addr;
 }
 
-static void
+static uint
 bmap_free(struct inode* ip, uint addr, int depth) {
 	int j;
 	uint *a;
+	uint freed = 0;
 	struct buf *bp;
-
-	if(depth == 0) {
-		bfree(ip->dev, addr);
-		return;
-	}
 
 	bp = bread(ip->dev, addr);
 	a = (uint*) bp->data;
 
     for(j = 0; j < NINDIRECT ; j++){
       if(a[j]) {
-		  bmap_free(ip, a[j], depth - 1);
-		  a[j] = 0;
+    	  if(depth > 0) {
+    		  freed += bmap_free(ip, a[j], depth - 1);
+    		  a[j] = 0;
+    	  } else {
+    		  freed++;
+    		  bfree(ip->dev, a[j]);
+    	  }
       }
     }
 
 	brelse(bp);
 
 	bfree(ip->dev, addr);
+	freed++;
+
+	return freed;
 }
 
 //PAGEBREAK!
@@ -402,7 +406,6 @@ static uint
 bmap(struct inode *ip, uint bn)
 {
 	uint addr;
-	uint indirect_index;
 
 	if (bn < NDIRECT) {
 		if ((addr = ip->addrs[bn]) == 0)
@@ -425,11 +428,8 @@ bmap(struct inode *ip, uint bn)
 		if ((addr = ip->addrs[NDIRECT + 1]) == 0)
 			ip->addrs[NDIRECT + 1] = addr = balloc(ip->dev);
 
-		indirect_index = bn / NINDIRECT;
-		addr = bmap_get(ip, indirect_index, addr);
-
-		indirect_index = bn % NINDIRECT;
-		addr = bmap_get(ip, indirect_index, addr);
+		addr = bmap_get(ip, bn / NINDIRECT, addr);
+		addr = bmap_get(ip, bn % NINDIRECT, addr);
 
 		return addr;
 	}
@@ -440,14 +440,9 @@ bmap(struct inode *ip, uint bn)
 		if ((addr = ip->addrs[NDIRECT + 2]) == 0)
 			ip->addrs[NDIRECT + 2] = addr = balloc(ip->dev);
 
-		indirect_index = bn / (NINDIRECT * NINDIRECT);
-		addr = bmap_get(ip, indirect_index, addr);
-
-		indirect_index = (bn / NINDIRECT) % NINDIRECT ;
-		addr = bmap_get(ip, indirect_index, addr);
-
-		indirect_index = bn % NINDIRECT;
-		addr = bmap_get(ip, indirect_index, addr);
+		addr = bmap_get(ip, bn / (NINDIRECT * NINDIRECT), addr);
+		addr = bmap_get(ip, (bn / NINDIRECT) % NINDIRECT, addr);
+		addr = bmap_get(ip, bn % NINDIRECT, addr);
 
 		return addr;
 	}
@@ -464,27 +459,42 @@ static void
 itrunc(struct inode *ip)
 {
   int i;
+  uint freed = 0;
 
   for(i = 0; i < NDIRECT; i++){
     if(ip->addrs[i]){
       bfree(ip->dev, ip->addrs[i]);
+      freed++;
       ip->addrs[i] = 0;
     }
   }
 
+  ip->size -= freed;
+  iupdate(ip);
+
   if(ip->addrs[NDIRECT]){
-    bmap_free(ip, ip->addrs[NDIRECT], 1);
+	freed = bmap_free(ip, ip->addrs[NDIRECT], 0);
     ip->addrs[NDIRECT] = 0;
+
+    ip->size -= freed;
+    iupdate(ip);
   }
 
   if(ip->addrs[NDIRECT + 1]){
-	bmap_free(ip, ip->addrs[NDIRECT+1], 2);
+    freed = bmap_free(ip, ip->addrs[NDIRECT+1], 1);
 	ip->addrs[NDIRECT+1] = 0;
+
+	ip->size -= freed;
+	iupdate(ip);
   }
 
+
   if(ip->addrs[NDIRECT + 2]){
-	bmap_free(ip, ip->addrs[NDIRECT+2], 3);
-	ip->addrs[NDIRECT+1] = 0;
+	freed = bmap_free(ip, ip->addrs[NDIRECT+2], 2);
+	ip->addrs[NDIRECT+2] = 0;
+
+	ip->size -= freed;
+	iupdate(ip);
   }
 
   ip->size = 0;
