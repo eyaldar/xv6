@@ -24,14 +24,15 @@ int
 main(int argc, char *argv[])
 {
   int fd, pos, read_count, write_count, seek, ret;
-  char c;
+  char fill_char, write_char;
   char filename[10];
 
   strcpy(filename, argv[1]);
   read_count=atoi(argv[2]);
-  seek=atoi_with_neg(argv[3]);
-  c = *argv[4];
-  write_count=atoi(argv[5]);
+  fill_char = *argv[3];
+  seek=atoi_with_neg(argv[4]);
+  write_char = *argv[5];
+  write_count=atoi(argv[6]);
   
   if((fd = open(filename, O_CREATE | O_RDWR)) < 0){
       printf(1, "cat: cannot open %s\n", filename);
@@ -41,10 +42,10 @@ main(int argc, char *argv[])
 	  ret=read(fd, buf, read_count);
   printf(1, "read %d bytes, str is: %s\n", ret, buf);
   printf(1, "running lseek(%d)\n", seek);
-  pos=lseek(fd, seek, '\0');
+  pos=lseek(fd, seek, fill_char);
   printf(1, "return value/position = %d\n", pos);
   if (write_count > 0) {
-	  fill_buf(c, write_count);
+	  fill_buf(write_char, write_count);
 
 	  ret=write(fd, buf, write_count);
 	  printf(1, "buf = %s, just wrote %d bytes\n", buf, ret);
