@@ -39,18 +39,21 @@ main(int argc, char *argv[])
 	}
 	for (i=0; i<BUF_SZ;i++)
 		buf[i]=argv[2][0];
-	for (i=0; i<count/BUF_SZ;i++)
+	for (i=0; i<count/BUF_SZ;i++){
+		printf(1, "writing block %d\n", i);
 		if ((n=write(fd,buf,BUF_SZ)) != BUF_SZ)
 		{
 			printf(2,"Failed to Write count=%d\n",i*BUF_SZ);
 			exit();
 		}
-	for (i=0; i<count%BUF_SZ;i++)
+	}
+	for (i=0; i<count%BUF_SZ;i++) {
 		if ((n=write(fd,argv[2],1)) != 1)
 		{
 			printf(2,"Failed to Write count=%d\n",count-i);
 			exit();
 		}
+	}
 
   exit();
 }

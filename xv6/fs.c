@@ -58,9 +58,9 @@ balloc(uint dev)
 
   bp = 0;
   readsb(dev, &sb);
-  for(b = 0; b < sb.size; b += BPB){
+  for(b = 0; b < sb.size - sb.nlog; b += BPB){
     bp = bread(dev, BBLOCK(b, sb.ninodes));
-    for(bi = 0; bi < BPB && b + bi < sb.size; bi++){
+    for(bi = 0; bi < BPB && b + bi < sb.size - sb.nlog; bi++){
       m = 1 << (bi % 8);
       if((bp->data[bi/8] & m) == 0){  // Is block free?
         bp->data[bi/8] |= m;  // Mark block in use.
@@ -362,11 +362,10 @@ bmap_get(struct inode* ip, uint bn, uint addr) {
 	return result_addr;
 }
 
-static uint
+static void
 bmap_free(struct inode* ip, uint addr, int depth) {
 	int j;
 	uint *a;
-	uint freed = 0;
 	struct buf *bp;
 
 	bp = bread(ip->dev, addr);
@@ -375,21 +374,17 @@ bmap_free(struct inode* ip, uint addr, int depth) {
     for(j = 0; j < NINDIRECT ; j++){
       if(a[j]) {
     	  if(depth > 0) {
-    		  freed += bmap_free(ip, a[j], depth - 1);
-    		  a[j] = 0;
+    		  bmap_free(ip, a[j], depth - 1);
     	  } else {
-    		  freed++;
     		  bfree(ip->dev, a[j]);
     	  }
+    	  a[j] = 0;
       }
     }
 
 	brelse(bp);
 
 	bfree(ip->dev, addr);
-	freed++;
-
-	return freed;
 }
 
 //PAGEBREAK!
@@ -459,42 +454,27 @@ static void
 itrunc(struct inode *ip)
 {
   int i;
-  uint freed = 0;
 
   for(i = 0; i < NDIRECT; i++){
     if(ip->addrs[i]){
       bfree(ip->dev, ip->addrs[i]);
-      freed++;
       ip->addrs[i] = 0;
     }
   }
 
-  ip->size -= freed;
-  iupdate(ip);
-
   if(ip->addrs[NDIRECT]){
-	freed = bmap_free(ip, ip->addrs[NDIRECT], 0);
+    bmap_free(ip, ip->addrs[NDIRECT], 0);
     ip->addrs[NDIRECT] = 0;
-
-    ip->size -= freed;
-    iupdate(ip);
   }
 
   if(ip->addrs[NDIRECT + 1]){
-    freed = bmap_free(ip, ip->addrs[NDIRECT+1], 1);
+	bmap_free(ip, ip->addrs[NDIRECT+1], 1);
 	ip->addrs[NDIRECT+1] = 0;
-
-	ip->size -= freed;
-	iupdate(ip);
   }
 
-
   if(ip->addrs[NDIRECT + 2]){
-	freed = bmap_free(ip, ip->addrs[NDIRECT+2], 2);
+	bmap_free(ip, ip->addrs[NDIRECT+2], 2);
 	ip->addrs[NDIRECT+2] = 0;
-
-	ip->size -= freed;
-	iupdate(ip);
   }
 
   ip->size = 0;
