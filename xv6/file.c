@@ -165,9 +165,9 @@ fileseek(struct file *f, int off, char c)
 	int final_off;
 
 	if(f->readable == 0 && f->writable == 0)
-	return -1;
+		return -1;
 	if(f->type == FD_PIPE)
-	return -1;
+		return -1;
 	if(f->type == FD_INODE){
 
 		ilock(f->ip);
@@ -175,14 +175,12 @@ fileseek(struct file *f, int off, char c)
 			final_off = off + f->off;
 			f->off = r;
 
-			if(final_off > 0 && r < final_off) {
+			if(final_off > 0 && r < final_off && f->writable) {
 				iunlock(f->ip);
 
-				r = fileresize(f, off - r, c);
+				r += fileresize(f, off - r, c);
 
 				ilock(f->ip);
-
-				f->off = f->ip->size - 1;
 			}
 		}
 
