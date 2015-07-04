@@ -34,16 +34,18 @@ struct dinode {
 };
 
 // Inodes per block.
-#define IPB           (BSIZE / sizeof(struct dinode))
+#define IPB           (BSIZE / sizeof(struct dinode)) // 512 / 64 = 8
 
 // Block containing inode i
-#define IBLOCK(i)     ((i) / IPB + 2)
+#define IBLOCK(i)     ((i) / IPB + 2) // (i / 8) + 2 for boot block and superblock
 
 // Bitmap bits per block
-#define BPB           (BSIZE*8)
+#define BPB           (BSIZE*8) // 512 * 8 = 4096
 
 // Block containing bit for block b
-#define BBLOCK(b, ninodes) (b/BPB + (ninodes)/IPB + 3)
+#define BBLOCK(b, ninodes) (b/BPB + (ninodes)/IPB + 3) // b / 4096 + ninodes / 8 + 3
+													   // +3 - for boot block, super block
+													   // and ceiling for the division.
 
 // Directory is a file containing a sequence of dirent structures.
 #define DIRSIZ 14

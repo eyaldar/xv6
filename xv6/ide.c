@@ -75,10 +75,10 @@ idestart(struct buf *b)
   idewait(0);
   outb(0x3f6, 0);  // generate interrupt
   outb(0x1f2, 1);  // number of sectors
-  outb(0x1f3, b->sector & 0xff);
-  outb(0x1f4, (b->sector >> 8) & 0xff);
-  outb(0x1f5, (b->sector >> 16) & 0xff);
-  outb(0x1f6, 0xe0 | ((b->dev&1)<<4) | ((b->sector>>24)&0x0f));
+  outb(0x1f3, b->sector & 0xff); // First 8 bits of b->sector (1-8)
+  outb(0x1f4, (b->sector >> 8) & 0xff); // Next 8 bits of b->sector (9-16)
+  outb(0x1f5, (b->sector >> 16) & 0xff); // Next 8 bits of b->sector (17-24)
+  outb(0x1f6, 0xe0 | ((b->dev&1)<<4) | ((b->sector>>24)&0x0f)); // E | 1 | MSB of b->sector (25-28)
   if(b->flags & B_DIRTY){
     outb(0x1f7, IDE_CMD_WRITE);
     outsl(0x1f0, b->data, 512/4);

@@ -212,7 +212,7 @@ sys_unlink(void)
   if(writei(dp, (char*)&de, off, sizeof(de)) != sizeof(de))
     panic("unlink: writei");
   if(ip->type == T_DIR){
-    dp->nlink--;
+    dp->nlink--; // due to the "." link being unlinked.
     iupdate(dp);
   }
   iunlockput(dp);

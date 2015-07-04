@@ -59,9 +59,10 @@ balloc(uint dev)
   bp = 0;
   readsb(dev, &sb);
   for(b = 0; b < sb.size; b += BPB){
-    bp = bread(dev, BBLOCK(b, sb.ninodes));
+    bp = bread(dev, BBLOCK(b, sb.ninodes)); // reads the correct bitmap block.
     for(bi = 0; bi < BPB && b + bi < sb.size; bi++){
-      m = 1 << (bi % 8);
+      m = 1 << (bi % 8); // shift the bit by 0-7, depending on the modulo
+      	  	  	  	  	 // determines which bit is corresponding to bi inside the byte bi/8.
       if((bp->data[bi/8] & m) == 0){  // Is block free?
         bp->data[bi/8] |= m;  // Mark block in use.
         log_write(bp);
@@ -86,7 +87,8 @@ bfree(int dev, uint b)
   readsb(dev, &sb);
   bp = bread(dev, BBLOCK(b, sb.ninodes));
   bi = b % BPB;
-  m = 1 << (bi % 8);
+  m = 1 << (bi % 8); // shift the bit by 0-7, depending on the modulo
+ 	  	 	 	 	 // determines which bit is corresponding to bi inside the byte bi/8.
   if((bp->data[bi/8] & m) == 0)
     panic("freeing free block");
   bp->data[bi/8] &= ~m;
